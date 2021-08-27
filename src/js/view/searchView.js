@@ -30,10 +30,52 @@ export const clearSearchQuery = () => {
 // Дараах функц нь дараачийн хайлт хийхэд өмнөх хайлтын үр дүнг дэлгэцэнээс цэвэрлэх үйлдлийг хийх бөгөөд innerHTML нь хоосон утга өгөхөд энэ асуудал шийдэгдэж байгаа юм.
 export const clearSearchResult = () => {
   elements.searchResultList.innerHTML = "";
+  elements.pageButtons.innerHTML = "";
 };
 // Хайлтын үр дүнг өгдөг функц
 export const getInput = () => elements.searchInput.value;
 
-export const renderRecipes = (recipes) => {
-  recipes.forEach(renderRecipe);
+export const renderRecipes = (recipes, currentPage = 1, resPerPage = 10) => {
+  //start д өмнөх хуудсанд байгаа үр дүнгийн тоог өгч байгаа буюу тухайн хуудасны өгөгдөл хэддүгээрээс эхэлж байгааг харуулах юм.
+  const start = (currentPage - 1) * resPerPage;
+  // end Тухайн хуудас хэд дэх өгөгдөл хүртлэх өгөгдлийг харуулж байгааг заана.
+  const end = currentPage * resPerPage;
+
+  recipes.slice(start, end).forEach(renderRecipe);
+
+  // Хуудаслалтын товчуудыг гаргаж ирэх.
+  const totalPages = Math.ceil(recipes.length / resPerPage);
+
+  renderButtons(currentPage, totalPages);
+};
+
+// Хуудасны төлөв нь type ===> 'prev','next'
+const createButton = (
+  page,
+  type,
+  direction,
+) => ` <button class="btn-inline results__btn--${type}" data-goto  = ${page}>
+<svg class="search__icon">
+    <use href="img/icons.svg#icon-triangle-${direction}"></use>
+</svg>
+<span>Хуудас ${page}</span>
+</button>
+`;
+
+const renderButtons = (currentPage, totalPages) => {
+  let buttonHtml;
+
+  if (currentPage === 1 && totalPages > 1) {
+    // 1-р хуудсан ээр байна. 2-р хуудас гэдэг товчийг гаргах.
+    buttonHtml = createButton(2, "next", "right");
+  } else if (currentPage < totalPages) {
+    //Өмнөх болон дараачийн хуудасруу шилжих товчуудыг үзүүлнэ.
+    buttonHtml = createButton(currentPage - 1, "prev", "left");
+    buttonHtml += createButton(currentPage + 1, "next", "right");
+  } else if (currentPage === totalPages) {
+    // Хамгийн сүүлийн хуудас дээр байна. Өмнөх рүү шилжүүлэх товчийг үзүүлнэ.
+    buttonHtml = createButton(currentPage - 1, "prev", "left");
+  }
+
+  elements.pageButtons.insertAdjacentHTML("afterbegin", buttonHtml);
 };
