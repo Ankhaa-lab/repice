@@ -22,7 +22,7 @@ export default class Search {
       //   );
       //   console.log(result);
     } catch (error) {
-      alert("Асуудал гарлаа: " + error);
+      console.log("Асуудал гарлаа: " + error);
     }
   }
 }
