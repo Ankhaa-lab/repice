@@ -7,7 +7,7 @@
 import { elements } from "./base";
 //renderRecipe гэдэг функц бол export хийгдээгүй байгаа тул private функц байна
 const renderRecipe = (recipe) => {
-  console.log(recipe);
+  // console.log(recipe);
   const markup = `<li>
     <a class="results__link" href="#${recipe.recipe_id}">
         <figure class="results__fig">
